@@ -1,0 +1,24 @@
+{
+  "name": "questions-answers",
+  "version": "1.0.0",
+  "description": "API for getting questions and answers data for Project Catwalk",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DBdirtbags/Questions-Answers.git"
+  },
+  "author": "Kayla Elortondo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/DBdirtbags/Questions-Answers/issues"
+  },
+  "homepage": "https://github.com/DBdirtbags/Questions-Answers#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongodb": "^3.6.6"
+  }
+}
