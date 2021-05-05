@@ -1,17 +1,14 @@
-const { MongoClient } = require("mongodb");
+const mongoose = require('mongoose');
 
 const uri = "mongodb://127.0.0.1:27017/?gssapiServiceName=mongodb";
 
-const client = new MongoClient(uri, {useUnifiedTopology: true});
+mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true})
+  .then(() => {
+    console.log('Successfully connected to MongoDB.');
+  })
+  .catch((err) => {
+    console.error(err);
+  })
 
-async function run() {
-  try {
-    await client.connect();
-    await client.db("admin").command({ping: 1});
-    console.log("Connected to MongoDB server.");
-  } finally {
-    await client.close();
-  }
-}
+var db = mongoose.connection;
 
-run().catch(console.dir);
