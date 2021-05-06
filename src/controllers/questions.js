@@ -11,6 +11,7 @@ exports.questionList = function(req, res) {
   let cb = function (err, questions) {
     if (err) {
       console.error(err);
+      res.sendStatus(500);
     } else {
       let data = { product_id: req.query.product_id, results: questions}
       res.status(200).send(data);
@@ -19,7 +20,7 @@ exports.questionList = function(req, res) {
 
   let pipeline = [
     { $match: { product_id: id, reported: 0 }},
-    { $sort: { helpful: -1 }},
+    { $sort: { question_helpfulness: -1 }},
     { $skip: (count* (page - 1)) },
     { $limit: (count) },
     { $addFields: { reported: false }},
@@ -63,7 +64,6 @@ exports.questionList = function(req, res) {
   Question.
     aggregate(pipeline).
     exec(cb)
-
 }
 
 //Adds a question for the given product

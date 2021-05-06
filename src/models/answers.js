@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
-const AnswersSchema = new Schema({})
+const AnswersSchema = new Schema({}, { strict: false })
 
 AnswersSchema.index({ question_id: 1 })
 
