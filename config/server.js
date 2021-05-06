@@ -1,8 +1,9 @@
 const express = require('express');
-const app = express();
+const bodyParser = require('body-parser')
 
-app.use(express.json()) // for parsing application/json
-app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+const app = express();
+app.use(bodyParser.json()) // for parsing application/json
+app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 
 const port = 3001;
 
