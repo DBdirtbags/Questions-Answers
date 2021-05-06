@@ -99,10 +99,26 @@ exports.questionPost = function(req, res) {
 
 //Updates a question to show it was found helpful.
 exports.questionHelpful = function(req, res) {
-  res.send('Updates a question to show it was found helpful.');
+  const id = parseInt(req.params.question_id);
+  Question.updateOne({question_id: id}, { $inc: {question_helpfulness: 1 }}, (err, result) => {
+    if (err) {
+      res.sendStatus(500);
+    } else {
+      console.log(result);
+      res.sendStatus(204);
+    }
+  })
 }
 
 //Updates a question to show it was reported.
 exports.questionReport= function(req, res) {
-  res.send('Updates a question to show it was reported.');
+  const id = parseInt(req.params.question_id);
+  Question.updateOne({question_id: id}, { $inc: {reported: 1 }}, (err, result) => {
+    if (err) {
+      res.sendStatus(500);
+    } else {
+      console.log(result);
+      res.sendStatus(204);
+    }
+  })
 }
