@@ -12,6 +12,7 @@ mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true})
 require('../src/models/questions.js');
 require('../src/models/answerPhotos.js');
 require('../src/models/answers.js');
+require('../src/models/answersWithPhotos.js');
 
 let db = mongoose.connection;
 
