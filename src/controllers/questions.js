@@ -17,7 +17,6 @@ exports.questionList = function(req, res) {
     }
   };
 
-
   let pipeline = [
     { $match: { product_id: id, reported: 0 }},
     { $sort: { helpful: -1 }},
@@ -69,22 +68,33 @@ exports.questionList = function(req, res) {
 
 //Adds a question for the given product
 exports.questionPost = function(req, res) {
-  console.log(req.body);
   const id = parseInt(req.body.product_id);
   const body = req.body.body;
   const name = req.body.name;
   const email = req.body.email;
 
-  // await Question.create({
-  //   id:
-  //   product_id: id,
-  //   body: body,
-  //   date_written:
-  //   asker_name: name,
-  //   asker_email:
-  //   helpful: 0,
-  //   reported: false
-  // })
+  Question.countDocuments({}, async function (err, count) {
+    if (err) {
+      res.send(500);
+    } else {
+      await Question.create({
+        question_id: count+1,
+        product_id: id,
+        question_body: body,
+        question_date: new Date(),
+        asker_name: name,
+        asker_email: email,
+        question_helpfulness: 0,
+        reported: 0
+      }, (err, result) => {
+        if (err) {
+          res.sendStatus(500);
+        } else {
+          res.sendStatus(201);
+        }
+      })
+    }
+  })
 }
 
 //Updates a question to show it was found helpful.
