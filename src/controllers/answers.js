@@ -52,26 +52,40 @@ exports.answerPost = function(req, res) {
   const body = req.body.body;
   const name = req.body.name;
   const email = req.body.email;
+  const photos = req.body.photos;
+  let photoObjs;
 
-  Answer.countDocuments({}, async function (err, count) {
+  let query = AnswerPhotos.findOne({}).sort('-id');
+  query.exec((err, lastDoc) => {
     if (err) {
-      res.send(500);
+      console.error(err);
     } else {
-      await Answer.create({
-        answer_id: count+1,
-        question_id: id,
-        body: body,
-        date: new Date(),
-        answerer_name: name,
-        answerer_email: email,
-        helpfulness: 0,
-        reported: 0,
-        photos: []
-      }, (err, result) => {
+      let photoId = (lastDoc._doc.id);
+      console.log(photoId);
+      photoObjs = photos.map((photo) => {
+        return ({id: photoId++, url: photo})
+      })
+      Answer.countDocuments({}, async function (err, count) {
         if (err) {
-          res.sendStatus(500);
+          res.send(500);
         } else {
-          res.sendStatus(201);
+          await Answer.create({
+            answer_id: count+1,
+            question_id: id,
+            body: body,
+            date: new Date(),
+            answerer_name: name,
+            answerer_email: email,
+            helpfulness: 0,
+            reported: 0,
+            photos: photoObjs
+          }, (err, result) => {
+            if (err) {
+              res.sendStatus(500);
+            } else {
+              res.sendStatus(201);
+            }
+          })
         }
       })
     }

@@ -4,7 +4,7 @@
   "description": "API for getting questions and answers data for Project Catwalk",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --env node --coverage",
     "start": "node index.js"
   },
   "repository": {
@@ -22,5 +22,9 @@
     "express": "^4.17.1",
     "mongodb": "^3.6.6",
     "mongoose": "^5.12.7"
+  },
+  "devDependencies": {
+    "jest": "^26.6.3",
+    "supertest": "^6.1.3"
   }
 }
