@@ -2,7 +2,15 @@ version: "3.8"
 
 services:
   app:
-    image: qa-service:1.02
+    image: kelortondo/sdc-qa:server
+    ports:
+      - 3000:3000
+    depends_on:
+      - mongo
   mongo:
-    image: mongo
+    image: kelortondo/sdc-qa:db
+    ports:
+      - 27017:27017
+    volumes:
+      - '/data/db'
 
