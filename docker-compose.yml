@@ -1,0 +1,8 @@
+version: "3.8"
+
+services:
+  app:
+    image: qa-service:1.02
+  mongo:
+    image: mongo
+
