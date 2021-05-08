@@ -104,7 +104,6 @@ exports.questionHelpful = function(req, res) {
     if (err) {
       res.sendStatus(500);
     } else {
-      console.log(result);
       res.sendStatus(204);
     }
   })
@@ -117,7 +116,6 @@ exports.questionReport= function(req, res) {
     if (err) {
       res.sendStatus(500);
     } else {
-      console.log(result);
       res.sendStatus(204);
     }
   })

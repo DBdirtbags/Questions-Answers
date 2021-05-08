@@ -61,7 +61,6 @@ exports.answerPost = function(req, res) {
       console.error(err);
     } else {
       let photoId = (lastDoc._doc.id);
-      console.log(photoId);
       photoObjs = photos.map((photo) => {
         return ({id: photoId++, url: photo})
       })
@@ -100,7 +99,6 @@ exports.answerHelpful = function(req, res) {
     if (err) {
       res.sendStatus(500);
     } else {
-      console.log(result);
       res.sendStatus(204);
     }
   })
@@ -113,7 +111,6 @@ exports.answerReport= function(req, res) {
     if (err) {
       res.sendStatus(500);
     } else {
-      console.log(result);
       res.sendStatus(204);
     }
   })
