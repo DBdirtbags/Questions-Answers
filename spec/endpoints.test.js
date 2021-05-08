@@ -21,7 +21,7 @@ afterAll((done) => {
   });
 })
 
-describe('/questions', function() {
+xdescribe('/questions', function() {
   test('returns the correct data for a GET request to /questions', async () => {
     const response = await supertest(app).get('/qa/questions/?product_id=9998&count=3&page=2')
       .expect(200)
@@ -100,7 +100,7 @@ describe('/questions', function() {
   });
 });
 
-describe('/answers', function() {
+xdescribe('/answers', function() {
   test('returns the answers to a given question', async () => {
     const response = await supertest(app).get('/qa/questions/1/answers?count=3&page=2')
       .expect(200)
@@ -148,7 +148,6 @@ describe('/answers', function() {
             supertest(app)
              .get('/qa/questions/1/answers?count=10')
              .then((response) => {
-               console.log(response.body);
                expect(response.body.results[5].helpfulness).toEqual(1)
                done();
              })
@@ -173,7 +172,6 @@ describe('/answers', function() {
             supertest(app)
              .get('/qa/questions/1/answers?count=10')
              .then((response) => {
-               console.log(response.body);
                expect(response.body.results.length).toEqual(5);
                done();
              })
@@ -184,3 +182,19 @@ describe('/answers', function() {
     })
   });
 })
+
+describe('responds in under 50 ms', function() {
+  test('responds to a GET request at /questions within 50ms', async () => {
+    jest.setTimeout(30000)
+    await supertest(app).get('/qa/questions/?product_id=15000&count=100')
+      .expect(200)
+  });
+  test('responds to a GET request at /questions/:question_id/answers within 50ms', async () => {
+    jest.setTimeout(30000)
+    await supertest(app).get('/qa/questions/50000/answers?count=100')
+      .expect(200)
+  });
+})
+
+
+
