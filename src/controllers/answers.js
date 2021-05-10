@@ -80,8 +80,10 @@ exports.answerPost = function(req, res) {
             photos: photoObjs
           }, (err, result) => {
             if (err) {
+              console.log(err);
               res.sendStatus(500);
             } else {
+              console.log(result);
               res.sendStatus(201);
             }
           })
