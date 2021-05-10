@@ -12,4 +12,4 @@ services:
     ports:
       - 27017:27017
     volumes:
-      - /usr/local/var/mongodb:/data/db
+      - /data/db
