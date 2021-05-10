@@ -36,9 +36,9 @@ exports.questionList = function(req, res) {
           input: '$answers',
           as: 'el',
           in: {
-            k: { $convert: {input: '$$el.id', to: 'string'} },
+            k: { $convert: {input: '$$el.answer_id', to: 'string'} },
             v: {
-              id: '$$el.id',
+              id: '$$el.answer_id',
               body: '$$el.body',
               date: '$$el.date',
               answerer_name: '$$el.answerer_name',
