@@ -17,9 +17,9 @@ This project was implemented to allow for scaling on AWS as web traffic to the P
 
 ## Installation
 ### Local Machine:
-Pre-requisites: Have MongoDB installed ono your computer
+Pre-requisites: Have MongoDB and Docker installed ono your computer
 1) After cloning the repo locally, `npm install`
-2) 
+2) From the main project directory, `docker-compose up`
 
 ## How to use?
 If people like your project they’ll want to learn how they can use it. To do so include step by step guide to use your project.
