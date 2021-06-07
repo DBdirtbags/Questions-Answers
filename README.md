@@ -24,6 +24,7 @@ This project was implemented to allow for scaling on AWS as web traffic to the T
 Pre-requisites: Have MongoDB and Docker installed on your computer
 1) After cloning the repo locally, `npm install`
 2) Navigate to the docker-compose.yml file and adjust the volume mapping to a convenient location on your local machine for persistent data
+3) Download data from <a href="https://drive.google.com/drive/folders/1vfzht2I5zikW0KW4Cfa5v92iYNaJ5D7w?usp=sharing">here</a> and place in the config folder in the main directory
 3) From the main project directory, `docker-compose up --build`. The data will import into your MongoDB.
 4) Once complete, you will be able to make requests to the API at localhost:3000 using the endpoints listed below.
 
