@@ -1,4 +1,4 @@
-# Question & Answers API for Project Catwalk
+# Question & Answers API for <a href="https://github.com/DBdirtbags/threads">Threads</a>
 This repository contains code for building the back-end services required for product Question/Answer data for Project Catwalk. Specifically, this repository will allow for the creation of Docker containers running Express servers as well as a MongoDB containing the Q&A data.
 
 ## Motivation
@@ -30,7 +30,7 @@ Pre-requisites: Have MongoDB and Docker installed on your computer
 
 ## Routes
 | Method/Route | Description | Usage
-| ------------ | ----------- | ---- |
+| ------- | ----------- | ---- |
 | `GET /qa/questions` | Retrieves a list of questions for a particular product. | Query params: `product_id`, `count` (default = 5), `page` (default = 1) |
 | `POST /qa/questions` | Adds a question for the given product | Body params: `product_id`, `body` (question text), `name` (asker name), `email` (asker email) |
 | `PUT /qa/questions/:question_id/helpful` | Updates a question to show it was found helpful. | |
