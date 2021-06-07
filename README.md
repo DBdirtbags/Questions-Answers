@@ -1,5 +1,5 @@
 # Question & Answers API for <a href="https://github.com/DBdirtbags/threads">Threads</a>
-This repository contains code for building the back-end services required for product Question/Answer data for Project Catwalk. Specifically, this repository will allow for the creation of Docker containers running Express servers as well as a MongoDB containing the Q&A data.
+This repository contains code for building the back-end services required for product Question/Answer data for Threads. Specifically, this repository will allow for the creation of Docker containers running Express servers as well as a MongoDB containing the Q&A data.
 
 ## Motivation
 This project was implemented to allow for scaling on AWS as web traffic to the Threads site increases.
@@ -40,3 +40,30 @@ Pre-requisites: Have MongoDB and Docker installed on your computer
 | `PUT /qa/answers/:answer_id/helpful` | Updates an answer to show it was found helpful. | |
 | `PUT /qa/answers/:answer_id/report` | Reports an answer. |  |
 
+
+## File Structure
+```
+.
+├── config/
+│   └── database.js
+│   └── server.js
+├── spec/
+│   └── endpoints.test.js
+│   └── jest.config.js
+├── src/
+│   └── controllers/
+│   │   └── answers.js
+│   │   └── questions.js
+│   └── models/
+│   │   └── answerPhotos.js
+│   │   └── answers.js
+│   │   └── answersWithPhotos.js
+│   │   └── questions.js
+│   └── routes.js
+├── docker-compose.yml
+├── Dockerfile.app
+├── Dockerfile.mongoseed
+├── index.js
+├── package.json
+└── README.md
+```
