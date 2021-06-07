@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const uri = "mongodb://mongo:27017/qa";
+const uri = "mongodb://db:27017/qa";
 
 mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true})
 .then(() => {
@@ -16,4 +16,3 @@ require('../src/models/answersWithPhotos.js');
 let db = mongoose.connection;
 
 module.exports = { db }
-

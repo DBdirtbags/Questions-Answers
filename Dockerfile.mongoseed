@@ -1,0 +1,7 @@
+FROM mongo:latest
+
+COPY ./config/qa_answerphotos_export.json /docker-entrypoint-initdb.d/qa_answerphotos_export.json
+COPY ./config/qa_answerswithphotos_export.json /docker-entrypoint-initdb.d/qa_answerswithphotos_export.json
+COPY ./config/qa_questions_export.json /docker-entrypoint-initdb.d/qa_questions_export.json
+
+CMD mongoimport --host db --port 27017 --db=qa --collection=questions --file=docker-entrypoint-initdb.d/qa_questions_export.json ; mongoimport --host db --port 27017 --db=qa --collection=answers_with_photos --file=docker-entrypoint-initdb.d/qa_answerswithphotos_export.json ; mongoimport --host db --port 27017 --db=qa --collection=answers_photos --file=docker-entrypoint-initdb.d/qa_answerphotos_export.json
