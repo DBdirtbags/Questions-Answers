@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    ports:
+      - 3000:3000
+    depends_on:
+      - db
+  db:
+    image: mongo:latest
+    container_name: db
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_DATABASE: qa
+    volumes:
+      - /Users/<your username>/Desktop/mongotest:/data/db
+  dbseed:
+    build:
+      context: .
+      dockerfile: Dockerfile.mongoseed
+    links:
+      - db
