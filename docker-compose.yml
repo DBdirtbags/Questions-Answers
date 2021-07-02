@@ -17,7 +17,9 @@ services:
     environment:
       MONGO_INITDB_DATABASE: qa
     volumes:
-      - /Users/<your username>/Desktop/mongotest:/data/db
+      # The final path segment here, e.g., /config needs to match
+      # the initial path segment in Dockerfile.mongoseed
+      - /Users/<your username>/Desktop/config:/data/db
   dbseed:
     build:
       context: .
