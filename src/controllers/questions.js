@@ -90,7 +90,7 @@ exports.questionPost = function(req, res) {
         if (err) {
           res.sendStatus(500);
         } else {
-          res.sendStatus(201);
+          res.status(201).send(result)
         }
       })
     }

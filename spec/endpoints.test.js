@@ -2,6 +2,7 @@ const app = require("../config/server");
 const mongoose = require("mongoose");
 const supertest = require("supertest");
 let Question, Answer;
+jest.setTimeout(20000)
 
 beforeAll((done) => {
   const uri = "mongodb://localhost/qa";
@@ -21,15 +22,8 @@ afterAll((done) => {
   });
 })
 
-xdescribe('/questions', function() {
-  test('returns the correct data for a GET request to /questions', async () => {
-    const response = await supertest(app).get('/qa/questions/?product_id=9998&count=3&page=2')
-      .expect(200)
-
-    expect(response.body.product_id).toEqual("9998");
-    expect(response.body.results.length).toEqual(3);
-    expect(response.body.results[1].asker_name).toEqual("Trevion.Terry72");
-  })
+describe('/questions', function() {
+  let questionId = null;
 
   test('posts a question to /questions', async () => {
     const request = await supertest(app).post('/qa/questions/')
@@ -40,81 +34,85 @@ xdescribe('/questions', function() {
         product_id: 9998
       })
       .expect(201)
+    let response = JSON.parse(request.res.text);
+    questionId = response.question_id;
   })
 
   test('is able to retrieve the posted question', async () => {
-    const response = await supertest(app).get(`/qa/questions/?product_id=9998&count=10`)
+    const response = await supertest(app).get(`/qa/questions/?product_id=9998&count=1000`)
       .expect(200)
 
     expect(response.body.product_id).toEqual("9998");
-    expect(response.body.results.length).toEqual(8);
-    expect(response.body.results[7].asker_name).toEqual("kelortondo");
+    let questions = response.body.results;
+    let newQuestionPresent = false;
+
+    for (let i = 0; i < questions.length; i++) {
+      question = questions[i];
+      if (question.question_id === questionId) {
+        newQuestionPresent = true;
+        break;
+      }
+    }
+
+    expect(newQuestionPresent).toBe(true);
   })
 
-  test('is able to mark a question as helpful', (done) => {
-    let query = Question.findOne({product_id: 9998, asker_name: 'kelortondo'}).select('question_id -_id');
-    query.exec((err, qnum) => {
-      if (err) {
-        console.error(err);
-      } else {
+  test('is able to mark a question as helpful', async () => {
+    let newQuestionHelpfulness = 0;
+
+    await supertest(app)
+      .put(`/qa/questions/${questionId}/helpful`)
+      .send({})
+      .expect(204)
+      .then(() => {
         supertest(app)
-          .put(`/qa/questions/${qnum._doc.question_id}/helpful`)
-          .send({})
-          .expect(204)
-          .then(() => {
-            supertest(app)
-             .get(`/qa/questions/?product_id=9998&count=10`)
-             .then((response) => {
-               expect(response.body.results[7].question_helpfulness).toEqual(1)
-               done();
-             })
-             .catch(err => done(err))
+          .get(`/qa/questions/?product_id=9998&count=10`)
+          .then((response) => {
+            let questions = response.body.results;
+            for (let i = 0; i < questions.length; i++) {
+              question = questions[i];
+              if (question.question_id === questionId) {
+                newQuestionHelpfulness = question.question_helpfulness;
+                break;
+              }
+            }
+            expect(newQuestionHelpfulness).toBeGreaterThan(0);
           })
-          .catch(err => done(err))
-      }
-    })
+      })
   });
 
-  test('is able to report a question', (done) => {
-    let query = Question.findOne({product_id: 9998, asker_name: 'kelortondo'}).select('question_id -_id');
-    query.exec((err, qnum) => {
-      if (err) {
-        console.error(err);
-      } else {
+  test('is able to report a question', async () => {
+    let newQuestionPresent = false;
+    supertest(app)
+      .put(`/qa/questions/${questionId}/report`)
+      .send({})
+      .expect(204)
+      .then(() => {
         supertest(app)
-          .put(`/qa/questions/${qnum._doc.question_id}/report`)
-          .send({})
-          .expect(204)
-          .then(() => {
-            supertest(app)
-             .get(`/qa/questions/?product_id=9998&count=10`)
-             .then((response) => {
-               expect(response.body.results.length).toEqual(7);
-               done();
-             })
-             .catch(err => done(err))
+          .get(`/qa/questions/?product_id=9998&count=1000`)
+          .then((response) => {
+
+            let questions = response.body.results;
+
+            for (let i = 0; i < questions.length; i++) {
+              question = questions[i];
+              if (question.question_id === questionId) {
+                newQuestionPresent = true;
+                break;
+              }
+            }
+
           })
-          .catch(err => done(err))
-      }
-    })
-  });
+      })
+      expect(newQuestionPresent).toBe(false);
+    });
 });
 
-xdescribe('/answers', function() {
-  test('returns the answers to a given question', async () => {
-    const response = await supertest(app).get('/qa/questions/1/answers?count=3&page=2')
-      .expect(200)
-
-    expect(response.body.question).toEqual("1");
-    expect(response.body.page).toEqual(2);
-    expect(response.body.count).toEqual(3);
-    expect(response.body.results.length).toEqual(2);
-    expect(response.body.results[0].answerer_name).toEqual("metslover");
-  })
+describe('/answers', function() {
+  let answerId = null;
 
   test('posts an answer to a question', async () => {
-    jest.setTimeout(30000)
-    await supertest(app).post('/qa/questions/1/answers')
+    let request = await supertest(app).post('/qa/questions/1/answers')
       .send({
         body: 'Clouds and fairies',
         name: 'kelortondo',
@@ -123,78 +121,78 @@ xdescribe('/answers', function() {
          'https://images.unsplash.com/photo-1500603720222-eb7a1f997356?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1653&q=80']
       })
       .expect(201)
+
+    let response = JSON.parse(request.res.text);
+    answerId = response.answer_id;
   })
 
   test('is able to retrieve the posted answer', async () => {
-    const response = await supertest(app).get('/qa/questions/1/answers?count=10')
+    const response = await supertest(app).get('/qa/questions/1/answers?count=1000')
       .expect(200)
 
-      expect(response.body.question).toEqual("1");
-      expect(response.body.results.length).toEqual(6);
-      expect(response.body.results[5].answerer_name).toEqual("kelortondo");
+    let answers = response.body.results;
+    let newAnswerPresent = false;
+
+    for (let i = 0; i < answers.length; i++) {
+      let answer = answers[i];
+      if (answer.answer_id === answerId) {
+        newAnswerPresent = true;
+        break;
+      }
+    }
+    expect(newAnswerPresent).toBe(true);
   })
 
-  test('is able to mark an answer as helpful', (done) => {
-    let query = Answer.findOne({answerer_name: 'kelortondo'}).select('answer_id -_id');
-    query.exec((err, anum) => {
-      if (err) {
-        console.error(err);
-      } else {
+  test('is able to mark an answer as helpful', async () => {
+    let newAnswerHelpfulness = 0;
+
+    await supertest(app)
+      .put(`/qa/answers/${answerId}/helpful`)
+      .send({})
+      .expect(204)
+      .then(() => {
         supertest(app)
-          .put(`/qa/answers/${anum._doc.answer_id}/helpful`)
-          .send({})
-          .expect(204)
-          .then(() => {
-            supertest(app)
-             .get('/qa/questions/1/answers?count=10')
-             .then((response) => {
-               expect(response.body.results[5].helpfulness).toEqual(1)
-               done();
-             })
-             .catch(err => done(err))
+          .get('/qa/questions/1/answers?count=100')
+          .then((response) => {
+            let answers = response.body.results;
+
+            for (let i = 0; i < answers.length; i++) {
+              answer = answers[i];
+              if (answer.answer_id === answerId) {
+                newAnswerHelpfulness = answer.helpfulness;
+                break;
+              }
+            }
+            expect(newAnswerHelpfulness).toBeGreaterThan(0);
           })
-          .catch(err => done(err))
-      }
-    })
+      })
+
   });
 
-  test('is able to report an answer', (done) => {
-    let query = Answer.findOne({answerer_name: 'kelortondo'}).select('answer_id -_id');
-    query.exec((err, anum) => {
-      if (err) {
-        console.error(err);
-      } else {
+  test('is able to report an answer', async () => {
+    let newAnswerPresent = false;
+
+    await supertest(app)
+      .put(`/qa/answers/${answerId}/report`)
+      .send({})
+      .expect(204)
+      .then(() => {
         supertest(app)
-          .put(`/qa/answers/${anum._doc.answer_id}/report`)
-          .send({})
-          .expect(204)
-          .then(() => {
-            supertest(app)
-             .get('/qa/questions/1/answers?count=10')
-             .then((response) => {
-               expect(response.body.results.length).toEqual(5);
-               done();
-             })
-             .catch(err => done(err))
+          .get('/qa/questions/1/answers?count=10')
+          .then((response) => {
+
+            let answers = response.body.results;
+
+            for (let i = 0; i < answers.length; i++) {
+              answer = answers[i];
+              if (answer.answer_id === answerId) {
+                newAnswerPresent = true;
+                break;
+              }
+            }
           })
-          .catch(err => done(err))
-      }
-    })
+      })
+    expect(newAnswerPresent).toBe(false);
   });
-})
-
-describe('responds in under 50 ms', function() {
-  test('responds to a GET request at /questions within 50ms', async () => {
-    jest.setTimeout(30000)
-    await supertest(app).get('/qa/questions/?product_id=15000&count=100')
-      .expect(200)
-  });
-  test('responds to a GET request at /questions/:question_id/answers within 50ms', async () => {
-    jest.setTimeout(30000)
-    await supertest(app).get('/qa/questions/50000/answers?count=100')
-      .expect(200)
-  });
-})
-
-
+});
 

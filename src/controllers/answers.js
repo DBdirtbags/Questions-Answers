@@ -83,8 +83,7 @@ exports.answerPost = function(req, res) {
               console.log(err);
               res.sendStatus(500);
             } else {
-              console.log(result);
-              res.sendStatus(201);
+              res.status(201).send(result)
             }
           })
         }
